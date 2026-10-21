@@ -1,5 +1,5 @@
 
-name: Build Android APK
+name: Build Android APKs
 
 on:
   push:
@@ -39,24 +39,41 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build ARM64 and ARMv7 APKs
+      # -------------------------------------------------
+      # Build ARM64 APK
+      # -------------------------------------------------
+      - name: Build ARM64 APK
         run: |
-          gradle --no-daemon :app:assembleDebug
+          gradle --no-daemon :app:assembleDebug \
+            -Pandroid.injected.build.abi=arm64-v8a
 
-      - name: List generated APKs
+      - name: Save ARM64 APK
         run: |
-          find app/build/outputs/apk/debug -type f -name "*.apk" -print
+          mkdir -p dist
+          find app/build/outputs/apk/debug \
+            -type f -name "*.apk" -print
+          cp app/build/outputs/apk/debug/app-debug.apk \
+            dist/KolomKhela-ARM64.apk
 
-      - name: Upload ARM64 APK
+      # -------------------------------------------------
+      # Build ARMv7 APK
+      # -------------------------------------------------
+      - name: Build ARMv7 APK
+        run: |
+          gradle --no-daemon :app:assembleDebug \
+            -Pandroid.injected.build.abi=armeabi-v7a
+
+      - name: Save ARMv7 APK
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk \
+            dist/KolomKhela-ARMv7.apk
+
+      # -------------------------------------------------
+      # Upload both APKs
+      # -------------------------------------------------
+      - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
-          name: KolomKhela-ARM64
-          path: app/build/outputs/apk/debug/*arm64-v8a*.apk
-          if-no-files-found: error
-
-      - name: Upload ARMv7 APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: KolomKhela-ARMv7
-          path: app/build/outputs/apk/debug/*armeabi-v7a*.apk
+          name: KolomKhela-Android-APKs
+          path: dist/*.apk
           if-no-files-found: error
