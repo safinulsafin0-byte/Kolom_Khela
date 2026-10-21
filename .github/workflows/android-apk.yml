@@ -1,5 +1,5 @@
 
-name: Build Android APKs
+name: Build KolomKhela Android APKs
 
 on:
   push:
@@ -39,41 +39,60 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # -------------------------------------------------
-      # Build ARM64 APK
-      # -------------------------------------------------
-      - name: Build ARM64 APK
+      - name: Build debug APKs
         run: |
-          gradle --no-daemon :app:assembleDebug \
-            -Pandroid.injected.build.abi=arm64-v8a
+          gradle --no-daemon :app:assembleDebug
 
-      - name: Save ARM64 APK
+      - name: Inspect generated APKs
+        shell: bash
         run: |
-          mkdir -p dist
-          find app/build/outputs/apk/debug \
+          set -euo pipefail
+
+          echo "Searching for generated APKs..."
+
+          if [ ! -d app/build/outputs/apk ]; then
+            echo "::error::APK output directory was not created."
+            exit 1
+          fi
+
+          find app/build/outputs/apk \
             -type f -name "*.apk" -print
-          cp app/build/outputs/apk/debug/app-debug.apk \
-            dist/KolomKhela-ARM64.apk
 
-      # -------------------------------------------------
-      # Build ARMv7 APK
-      # -------------------------------------------------
-      - name: Build ARMv7 APK
+      - name: Prepare ARM64 and ARMv7 APKs
+        shell: bash
         run: |
-          gradle --no-daemon :app:assembleDebug \
-            -Pandroid.injected.build.abi=armeabi-v7a
+          set -euo pipefail
 
-      - name: Save ARMv7 APK
-        run: |
-          cp app/build/outputs/apk/debug/app-debug.apk \
-            dist/KolomKhela-ARMv7.apk
+          mkdir -p dist
 
-      # -------------------------------------------------
-      # Upload both APKs
-      # -------------------------------------------------
-      - name: Upload APKs
+          ARM64_APK=$(find app/build/outputs/apk \
+            -type f -name "*arm64-v8a*.apk" -print -quit)
+
+          ARMV7_APK=$(find app/build/outputs/apk \
+            -type f -name "*armeabi-v7a*.apk" -print -quit)
+
+          if [ -z "$ARM64_APK" ]; then
+            echo "::error::ARM64 APK not found."
+            echo "Check the Gradle output above."
+            exit 1
+          fi
+
+          if [ -z "$ARMV7_APK" ]; then
+            echo "::error::ARMv7 APK not found."
+            echo "Check whether CMake compiled armeabi-v7a."
+            exit 1
+          fi
+
+          cp "$ARM64_APK" dist/KolomKhela-ARM64.apk
+          cp "$ARMV7_APK" dist/KolomKhela-ARMv7.apk
+
+          echo "Prepared APKs:"
+          ls -lh dist/
+
+      - name: Upload Android APKs
         uses: actions/upload-artifact@v4
         with:
           name: KolomKhela-Android-APKs
           path: dist/*.apk
           if-no-files-found: error
+          retention-days: 30
