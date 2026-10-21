@@ -1,8 +1,9 @@
+
 name: Build Android APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -11,6 +12,7 @@ permissions:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -19,27 +21,42 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
         with:
           accept-android-sdk-licenses: true
-          packages: 'platform-tools'
+          packages: "platform-tools"
 
       - name: Install Android build tools
         run: |
-          sdkmanager "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
+          sdkmanager "platforms;android-35" \
+            "build-tools;35.0.0" \
+            "ndk;27.2.12479018" \
+            "cmake;3.22.1"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build debug APK
-        run: gradle --no-daemon :app:assembleDebug
+      - name: Build ARM64 and ARMv7 APKs
+        run: |
+          gradle --no-daemon :app:assembleDebug
 
-      - name: Upload APK artifact
+      - name: List generated APKs
+        run: |
+          find app/build/outputs/apk/debug -type f -name "*.apk" -print
+
+      - name: Upload ARM64 APK
         uses: actions/upload-artifact@v4
         with:
-          name: KolomKhela-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: KolomKhela-ARM64
+          path: app/build/outputs/apk/debug/*arm64-v8a*.apk
+          if-no-files-found: error
+
+      - name: Upload ARMv7 APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: KolomKhela-ARMv7
+          path: app/build/outputs/apk/debug/*armeabi-v7a*.apk
           if-no-files-found: error
