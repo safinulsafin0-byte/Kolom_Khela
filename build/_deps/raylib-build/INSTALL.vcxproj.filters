@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\USER\Downloads\KolomKhela\KolomKhela\build\CMakeFiles\ad1933181bf953b45ac841fbfe74de2d\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{CB67C916-AC09-3353-B5E2-42547A776EEF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

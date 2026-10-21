@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/raylib-populate"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/53b22ca98c22f2e9756272ecfc393cd9/raylib-populate.rule"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/2d3607d9d4ea732134cc0155da00270a/raylib-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"raylib-populate"
+		],
+		"name" : "raylib-populate"
+	}
+}

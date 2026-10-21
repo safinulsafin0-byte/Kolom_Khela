@@ -1,0 +1,14 @@
+# Target labels
+ raylib-populate
+# Source files and their labels
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/raylib-populate
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/53b22ca98c22f2e9756272ecfc393cd9/raylib-populate.rule
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/2d3607d9d4ea732134cc0155da00270a/raylib-populate-complete.rule
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-build.rule
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-configure.rule
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-download.rule
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-install.rule
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-mkdir.rule
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-patch.rule
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-test.rule
+C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/CMakeFiles/dfda3aff33782bad8b0b67883a6b779d/raylib-populate-update.rule

@@ -1,0 +1,10 @@
+^C:\USERS\USER\DOWNLOADS\KOLOMKHELA\KOLOMKHELA\BUILD\_DEPS\RAYLIB-SUBBUILD\CMAKEFILES\53B22CA98C22F2E9756272ECFC393CD9\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild -BC:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/USER/Downloads/KolomKhela/KolomKhela/build/_deps/raylib-subbuild/raylib-populate.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
