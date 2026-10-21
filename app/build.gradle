@@ -14,11 +14,6 @@ android {
         versionCode 2
         versionName '1.1'
 
-        // Build APKs for both 64-bit and 32-bit ARM Android devices.
-        ndk {
-            abiFilters 'arm64-v8a', 'armeabi-v7a'
-        }
-
         externalNativeBuild {
             cmake {
                 cppFlags '-std=c++17'
@@ -34,7 +29,7 @@ android {
         }
     }
 
-    // Build separate APKs for each ABI.
+    // Generate a separate APK for each ARM architecture.
     splits {
         abi {
             enable true
