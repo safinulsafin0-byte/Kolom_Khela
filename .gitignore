@@ -1,0 +1,9 @@
+# Generated build output
+/build/
+/app/build/
+/.gradle/
+/.idea/
+/.externalNativeBuild/
+*.iml
+local.properties
+.DS_Store
