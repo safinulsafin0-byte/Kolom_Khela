@@ -1,181 +1,70 @@
-
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.22)
 project(KolomKhela LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES AND NOT ANDROID)
+    set(CMAKE_BUILD_TYPE Release)
 endif()
 
-# ----------------------------------------------------------------
-# raylib 5.0 configuration
-# ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# raylib (fetched automatically). Keep this tag the same one your main.cpp
+# already compiles with. 5.5 is the stable release that ships stb_image_resize2
+# (the same header that was failing on armeabi-v7a).
+# ---------------------------------------------------------------------------
+set(RAYLIB_TAG "5.5" CACHE STRING "raylib git tag")
+
+include(FetchContent)
 
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
-# Configure the Android backend.
 if(ANDROID)
     set(PLATFORM "Android" CACHE STRING "" FORCE)
 endif()
 
-# Compatibility for raylib 5.0 with newer CMake versions.
-set(CMAKE_POLICY_VERSION_MINIMUM 3.5 CACHE STRING "" FORCE)
-
-include(FetchContent)
-
 FetchContent_Declare(
     raylib
     GIT_REPOSITORY https://github.com/raysan5/raylib.git
-    GIT_TAG 5.0
+    GIT_TAG ${RAYLIB_TAG}
     GIT_SHALLOW TRUE
 )
-
 FetchContent_MakeAvailable(raylib)
 
-# ----------------------------------------------------------------
-# Android NDK 27 compatibility patch
-# raylib 5.0 uses the deprecated ALooper_pollAll() API.
-# Replace it with ALooper_pollOnce() for Android builds.
-# ----------------------------------------------------------------
-
+# ---------------------------------------------------------------------------
+# FIX for:  stb_image_resize2.h: call to undeclared function 'vld1q_f16'
+# On armeabi-v7a, stb_image_resize2 picks a NEON FP16 path that the 32-bit ARM
+# toolchain cannot compile. KolomKhela never resizes textures (all graphics are
+# procedural), so we simply switch the SIMD code path off for raylib.
+# ---------------------------------------------------------------------------
 if(ANDROID)
-    set(RAYLIB_ANDROID_SOURCE
-        "${raylib_SOURCE_DIR}/src/platforms/rcore_android.c"
-    )
-
-    if(NOT EXISTS "${RAYLIB_ANDROID_SOURCE}")
-        message(FATAL_ERROR
-            "Cannot find raylib Android source: ${RAYLIB_ANDROID_SOURCE}"
-        )
-    endif()
-
-    file(READ
-        "${RAYLIB_ANDROID_SOURCE}"
-        RAYLIB_ANDROID_TEXT
-    )
-
-    string(FIND
-        "${RAYLIB_ANDROID_TEXT}"
-        "ALooper_pollAll("
-        RAYLIB_POLLALL_POSITION
-    )
-
-    if(NOT RAYLIB_POLLALL_POSITION EQUAL -1)
-        string(REPLACE
-            "ALooper_pollAll("
-            "ALooper_pollOnce("
-            RAYLIB_ANDROID_TEXT
-            "${RAYLIB_ANDROID_TEXT}"
-        )
-
-        file(WRITE
-            "${RAYLIB_ANDROID_SOURCE}"
-            "${RAYLIB_ANDROID_TEXT}"
-        )
-
-        message(STATUS
-            "Applied raylib Android NDK compatibility patch"
-        )
-    else()
-        message(STATUS
-            "No ALooper_pollAll() calls found; patch not required"
-        )
-    endif()
+    target_compile_definitions(raylib PRIVATE STBIR_NO_SIMD)
 endif()
 
-# ----------------------------------------------------------------
-# Game source files
-# ----------------------------------------------------------------
-
-set(KK_SOURCES
-    src/main.cpp
-    src/PenPhysics.hpp
-    src/SoundSynth.hpp
-)
-
-# ----------------------------------------------------------------
-# Android target
-# ----------------------------------------------------------------
-
+# ---------------------------------------------------------------------------
+# Game target
+# ---------------------------------------------------------------------------
 if(ANDROID)
+    # Gradle expects libKolomKhela.so (android.app.lib_name = "KolomKhela")
+    add_library(KolomKhela SHARED src/main.cpp)
 
-    # Android loads the native library named libmain.so.
-    add_library(${PROJECT_NAME} SHARED ${KK_SOURCES})
+    target_link_libraries(KolomKhela PRIVATE raylib log android EGL GLESv2 OpenSLES m dl)
 
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        OUTPUT_NAME "main"
-    )
-
-    # Android Native App Glue.
-    set(APP_GLUE_DIR
-        "${CMAKE_ANDROID_NDK}/sources/android/native_app_glue"
-    )
-
-    if(NOT EXISTS "${APP_GLUE_DIR}/android_native_app_glue.c")
-        message(FATAL_ERROR
-            "Android native_app_glue.c not found in ${APP_GLUE_DIR}"
-        )
-    endif()
-
-    add_library(native_app_glue STATIC
-        "${APP_GLUE_DIR}/android_native_app_glue.c"
-    )
-
-    target_include_directories(native_app_glue PUBLIC
-        "${APP_GLUE_DIR}"
-    )
-
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-        raylib
-        native_app_glue
-        android
-        log
-        EGL
-        GLESv2
-        OpenSLES
-        m
-    )
-
-    target_link_options(${PROJECT_NAME} PRIVATE
+    # keep raylib's ANativeActivity_onCreate (native_app_glue) in the .so
+    # + 16 KB page alignment (needed for Android 15 devices on arm64)
+    target_link_options(KolomKhela PRIVATE
         -u ANativeActivity_onCreate
-    )
-
-# ----------------------------------------------------------------
-# Windows / Desktop target
-# ----------------------------------------------------------------
-
+        -Wl,-z,max-page-size=16384)
 else()
-
-    add_executable(${PROJECT_NAME} ${KK_SOURCES})
-
-    target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
+    add_executable(KolomKhela src/main.cpp)
+    target_link_libraries(KolomKhela PRIVATE raylib)
 
     if(MSVC)
-        target_compile_options(${PROJECT_NAME} PRIVATE
-            /W3
-            /utf-8
-        )
-    else()
-        target_compile_options(${PROJECT_NAME} PRIVATE
-            -Wall
-            -Wextra
-        )
+        target_compile_options(KolomKhela PRIVATE /utf-8)
     endif()
-
-    if(WIN32 AND NOT MSVC)
-        target_link_options(${PROJECT_NAME} PRIVATE -static)
-    endif()
-
 endif()
 
-# ----------------------------------------------------------------
-# Include game source directory
-# ----------------------------------------------------------------
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
-)
+target_include_directories(KolomKhela PRIVATE src)
