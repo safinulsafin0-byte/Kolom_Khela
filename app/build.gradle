@@ -6,15 +6,15 @@ android {
     namespace 'com.safinul.kolomkhela'
     compileSdk 35
 
-    // Must match the NDK installed in the GitHub workflow (ndk;27.2.12479018)
+    // Must match the NDK installed in the GitHub workflow
     ndkVersion '27.2.12479018'
 
     defaultConfig {
         applicationId 'com.safinul.kolomkhela'
         minSdk 24
         targetSdk 28
-        versionCode 3
-        versionName '1.2'
+        versionCode 4
+        versionName '1.3'
 
         externalNativeBuild {
             cmake {
@@ -31,8 +31,7 @@ android {
         }
     }
 
-    // One APK per architecture (arm64-v8a + armeabi-v7a).
-    // Do not add ndk.abiFilters when using ABI splits.
+    // One APK per architecture. Do not add ndk.abiFilters when using ABI splits.
     splits {
         abi {
             enable true
@@ -46,7 +45,6 @@ android {
         debug {
             debuggable true
         }
-
         release {
             minifyEnabled false
         }

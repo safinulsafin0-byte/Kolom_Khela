@@ -1,19 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
     <application
         android:allowBackup="false"
         android:hasCode="false"
+        android:hardwareAccelerated="true"
         android:label="Kolom Khela"
-        android:theme="@android:style/Theme.Material.Light.NoActionBar"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         android:usesCleartextTraffic="false">
+
         <activity
             android:name="android.app.NativeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|screenLayout|smallestScreenSize|uiMode|density"
             android:exported="true"
             android:label="Kolom Khela"
-            android:screenOrientation="landscape">
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorLandscape">
+
+            <!-- must match OUTPUT_NAME "main" in CMakeLists.txt  ->  libmain.so -->
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="main" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -182,8 +182,15 @@ struct Game {
 
     // ------------------------------------------------------------ lifecycle
     void Run() {
+#if defined(__ANDROID__)
+        // Android: no MSAA (some GPUs fail EGL config selection) and use the real display size
+        // (0,0) so touch coordinates match the render surface. The game letterboxes itself.
+        SetConfigFlags(FLAG_VSYNC_HINT);
+        InitWindow(0, 0, "KOLOM KHELA");
+#else
         SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
         InitWindow(1280, 720, "KOLOM KHELA");
+#endif
         SetExitKey(KEY_NULL);
         SetTargetFPS(60);
         SetRandomSeed((unsigned int)std::time(nullptr));
